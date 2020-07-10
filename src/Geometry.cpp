@@ -92,6 +92,12 @@ bool Sphere::Intersection(Ray &ray, double &t, Vec3 &PI){
 	}
 }
 
+void Sphere::SpecularReflectedRay(Ray &ray, Vec3 &PI){	
+	Matrix3 R = I() - 2.0*NormVec(PI).outer(NormVec(PI));
+	Vec3 ReflectedDirection = R*ray.GetDirection();
+	ray.SetRay(PI,ReflectedDirection);
+}
+
 //////////////////////////////////////////
 //	Ray Geometry					    //
 //////////////////////////////////////////

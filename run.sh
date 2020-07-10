@@ -1,4 +1,4 @@
 #/bin/bash
-g++ main.cpp Matrix.cpp Geometry.cpp
+g++ src/main.cpp src/Matrix.cpp src/Geometry.cpp
 ./a.out
 eog out.pgm &

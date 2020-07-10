@@ -27,6 +27,7 @@ class Ray{
 		void SetRay(Vec3 &origin, Vec3 &d);
 		Vec3 GetOrigin();
 		Vec3 GetDirection();
+		bool Cast(class Spehere *objects,const int NObjects, Vec3& PI);
 };
 
 class Sphere{
@@ -37,6 +38,8 @@ class Sphere{
 		Sphere(Vec3 &ceneter, const double &radius);
 		Vec3 NormVec(Vec3 P);
 		bool Intersection(Ray &ray, double &t, Vec3 &PI);
+		void ReflectedRay(Ray &ray, Vec3 &PI);
+		void SpecularReflectedRay(Ray &ray, Vec3 &PI);
 };
 
 class Light{

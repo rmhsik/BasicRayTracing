@@ -1,3 +1,5 @@
+#define BG_COLOR 0.24
+
 #include <fstream>
 #include <iostream>
 #include <cmath>
@@ -38,7 +40,7 @@ int main(){
     cout<<"Initilizing background..."<<endl;
    	for(int i=0;i<W;i++){
 	    for(int j=0;j<H;j++){ 
-    		screen.SetColor(i,j,60);
+    		screen.SetColor(i,j,BG_COLOR);
     	}
     }
     cout<<"Background finished."<<endl;
@@ -52,46 +54,40 @@ int main(){
             Ray ray(o,dir);
             double t_temp = 20000;
             double t = 200000;
-	    double K;
-	    int ColorValue;
-	    bool flag = true;
+			double K = BG_COLOR;
+			int ColorValue;
+			bool flag, flag2 = true;
             int idx = 0;
             bool intersection = false;
             bool oneintersection = false;
-            for (int n=0;n<NObjects;n++){
-                intersection = objects[n]->Intersection(ray,t_temp,PI);
-                if(intersection && t>t_temp){
-		    t = t_temp;
-                    idx = n;
-                    flag = true;
-	        
-	            Vec3 LightVec = PI-light.GetPosition();
-	            Vec3 LightVecN = (PI-light.GetPosition()).norm();
-	            Ray ShadowRay(PI,LightVecN);
-	            Vec3 dummyPI;
-                    K = (LightVec).norm().dot(objects[n]->NormVec(PI));
-        
-	            for(int m=0; m<NObjects;m++){
-			double dummyt = 200000;
-			if (objects[m]->Intersection(ShadowRay,dummyt,dummyPI) && m!=n &&dummyt<0){
-			flag = false;
-                        K = 0;
-	               	}
-	            }
-                    K = (K < 0) ? 0.0 : K;
-                    K = (K > 1.0) ? 1.0 : K;
-                    ColorValue = (int)(K*255);
-                    screen.SetColor(i,j,ColorValue);
-
-                /*
-                if (intersection && flag){
-                    //Clamp to 1
-                }
-                else if (intersection){screen.SetColor(i,j,0);}     	   
-                }*/
-                }
+			for(int k=0; k<1; k++){
+				for (int n=0;n<NObjects;n++){
+					intersection = objects[n]->Intersection(ray,t_temp,PI);
+					if(intersection && t>t_temp){
+						t = t_temp;
+						idx = n;
+						flag = flag2 = true;	
+						Vec3 LightVec = PI-light.GetPosition();
+						Vec3 LightVecN = (PI-light.GetPosition()).norm();
+						Ray ShadowRay(PI,LightVecN);
+						Vec3 dummyPI;
+						K = (LightVec).norm().dot(objects[n]->NormVec(PI));
+			
+						for(int m=0; m<NObjects;m++){
+							double dummyt = 200000;
+							if (objects[m]->Intersection(ShadowRay,dummyt,dummyPI) && m!=n &&dummyt<0){
+								flag2 = false;
+								K = 0;
+							}
+						}
+					}	
+				}
+			}
+			K = (K < 0) ? 0.0 : K;
+			K = (K > 1.0) ? 1.0 : K;		
+			ColorValue = (int)(K*255);
+			screen.SetColor(i,j,ColorValue);		
 	    }
-        }
     }
         
     cout<<"Evaluation finished."<<endl;
