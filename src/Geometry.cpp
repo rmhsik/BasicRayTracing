@@ -1,3 +1,4 @@
+#include <iostream>
 #include <cmath>
 #include "Matrix.h"
 #include "Geometry.h"
@@ -103,7 +104,8 @@ void Sphere::SpecularReflectedRay(Ray &ray, Vec3 &PI){
 //////////////////////////////////////////
 
 Ray::Ray(){
-	throw "Tried to create a ray without some parameter.";
+	//std::cout<<"Tried to create a ray without some parameter.\n";
+	//std::exit(1);
 }
 
 Ray::Ray(Vec3 &origin, Vec3 &d){
@@ -124,6 +126,65 @@ Vec3 Ray::GetDirection(){
 	return dir;
 }
 
+bool Ray::Cast(class Sphere* objects, const int NObjects, Vec3& PI, int& idx){
+	bool intersection_temp;
+	bool intersection = false;
+	double t = 20000;
+	double t_temp = 200000;
+	for (int n = 0; n < NObjects; n++){
+		intersection_temp = objects[n].Intersection(*this, t_temp, PI);
+		if (intersection_temp && t>t_temp){
+			t = t_temp;
+			idx = n;
+			intersection = true;
+		}
+	}
+	//std::cout<<"Intersection: "<<intersection;
+	//std::cout<<" t: "<<t;
+	//std::cout<<" Idx: "<<idx<<std::endl;
+	return intersection; 	
+}
+
+bool Ray::Cast(class Sphere* objects,const int NObjects, Vec3& PI, int& idx, double& tt){
+	bool intersection_temp;
+	bool intersection = false;
+	double t = 20000;
+	double t_temp = 200000;
+	for (int n = 0; n < NObjects; n++){
+		intersection_temp = objects[n].Intersection(*this, t_temp, PI);
+		if (intersection_temp && t>t_temp){
+			t = t_temp;
+			idx = n;
+			intersection = true;
+			tt = t;
+		}
+	}
+	//std::cout<<"Intersection: "<<intersection;
+	//std::cout<<" t: "<<t;
+	//std::cout<<" Idx: "<<idx<<std::endl;
+	return intersection;
+}
+
+//////////////////////////////////////////
+//	ShadowRay Geometry				    //
+//////////////////////////////////////////
+ShadowRay::ShadowRay(Vec3& PI, class Light& light){
+	Vec3 LightVecN = (PI - light.GetPosition()).norm();
+	Ray::SetRay(PI, LightVecN);
+}
+
+bool ShadowRay::Cast(class Sphere* objects, const int Nobjects, Vec3& PI, int& idx){
+	Vec3 dummyPI;
+	int tempIdx;
+	bool intersection = false;
+	bool intersection_temp = false;
+	double t=2000;
+	intersection_temp = Ray::Cast(objects, Nobjects, PI, tempIdx, t);
+	if(intersection_temp && tempIdx != idx){
+		intersection = true;
+	}
+	return intersection;
+}
 
 //////////////////////////////////////////
 //	Light Geometry					    //

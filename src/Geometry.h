@@ -27,7 +27,15 @@ class Ray{
 		void SetRay(Vec3 &origin, Vec3 &d);
 		Vec3 GetOrigin();
 		Vec3 GetDirection();
-		bool Cast(class Spehere *objects,const int NObjects, Vec3& PI);
+		bool Cast(class Sphere* objects,const int NObjects, Vec3& PI, int& idx);
+		bool Cast(class Sphere* objects,const int NObjects, Vec3& PI, int& idx, double& tt);
+};
+
+class ShadowRay: public Ray{
+	public:	
+		ShadowRay(Vec3& PI, class Light& light);
+		//ShadowRay(const int i);
+		bool Cast(class Sphere* objects, const int Nobjects, Vec3& PI, int& idx);
 };
 
 class Sphere{

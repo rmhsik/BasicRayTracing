@@ -109,7 +109,7 @@ class Matrix3 Vec3::outer(Vec3 Vec){
 	return M;
 }
 //////////////////////////////////////////
-//	Matrix3 Implementation		//
+//	Matrix3 Implementation		        //
 //////////////////////////////////////////
 
 Matrix3::Matrix3(){
